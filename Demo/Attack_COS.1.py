@@ -1,0 +1,45 @@
+import sys
+import os
+
+
+def parent_dir(path, n):
+    for _ in range(n):
+        path = os.path.dirname(path)
+    return path
+
+
+for i in range(1, 100):
+    try:
+        sys.path.append(parent_dir(__file__, i))
+        from __init__ import *
+    except ModuleNotFoundError:
+        pass
+    else:
+        logging.getLogger().setLevel(logging.INFO)
+        break
+
+from CODE.Attack.cosine import COS
+
+attacker = COS
+
+special_paramater = {
+    "c": 2e3,
+    "epoch": 100,
+}
+while True:
+    try:
+        attack_all(
+            attack_class=attacker,
+            reverse=True,
+            override=False,
+            device="cuda:1",
+            special_paramater=special_paramater,
+        )
+        break
+    except KeyboardInterrupt:
+        break
+    except RuntimeError:
+        torch.backends.cudnn.enabled = False
+
+
+# code5.2
