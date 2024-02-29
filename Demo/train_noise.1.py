@@ -1,7 +1,7 @@
 import sys
 import os
 
-pwd = os.getcwd()
+pwd = os.path.dirname(__file__)
 path = pwd
 while True:
     try:
@@ -18,16 +18,18 @@ from CODE.Utils.augmentation import Augmentation
 from CODE.Train.defence import Defence
 
 for i_model in TRAIN_MODEL_LIST:
-    for i_dataset in UNIVARIATE_DATASET_NAMES:
+    for i, i_dataset in enumerate(UNIVARIATE_DATASET_NAMES[::-1]):
+        if not i % 2 == 0:
+            continue
         defence_model = Defence
-        aug_method = "gaussian_smooth"
+        aug_method = "gaussian_noise"
         defence_model_paramaters = {
             "mother_model": i_model,
             "augmentation": Augmentation.get_method()[aug_method],
             "aug_paramater": dict(),
         }
         i_batch = 256
-        while i_batch > 32:
+        while True:
             try:
                 trainer = Trainer(
                     dataset=i_dataset,
@@ -40,15 +42,15 @@ for i_model in TRAIN_MODEL_LIST:
                 )
                 trainer.path_parameter = {"aug_method": aug_method}
                 trainer.__set_output_dir__()
-                trainer.train_and_evaluate(to_device=True, override=True)
+                trainer.train_and_evaluate(to_device=True, override=False)
                 break
             except RuntimeError as e:
                 if "CUDA out of memory" in str(e):
                     logging.debug(str(e))
                     torch.cuda.empty_cache()
                     time.sleep(1)
-                    dbs = int(dbs - 32)
-                    if dbs < 32:
+                    i_batch = int(i_batch - 32)
+                    if i_batch < 32:
                         raise RuntimeError(str(e))
                 elif "cudnn RNN backward can only be called in training mode" in str(e):
                     logging.warning(str(e))

@@ -17,17 +17,19 @@ print("pwd:", pwd)
 from CODE.Utils.augmentation import Augmentation
 from CODE.Train.defence import Defence
 
-for i_model in TRAIN_MODEL_LIST:
-    for i_dataset in UNIVARIATE_DATASET_NAMES:
+for i, i_dataset in enumerate(UNIVARIATE_DATASET_NAMES):
+    if not i % 3 == 1:
+        continue
+    for i_model in TRAIN_MODEL_LIST:
         defence_model = Defence
-        aug_method = "gaussian_noise"
+        aug_method = "gaussian_smooth"
         defence_model_paramaters = {
             "mother_model": i_model,
             "augmentation": Augmentation.get_method()[aug_method],
             "aug_paramater": dict(),
         }
         i_batch = 256
-        while True:
+        while i_batch > 32:
             try:
                 trainer = Trainer(
                     dataset=i_dataset,
@@ -35,7 +37,7 @@ for i_model in TRAIN_MODEL_LIST:
                     batch_size=i_batch,
                     model=defence_model,
                     unbais=True,
-                    device="cuda:0",
+                    device="cuda:1",
                     model_P=defence_model_paramaters,
                 )
                 trainer.path_parameter = {"aug_method": aug_method}
@@ -50,7 +52,7 @@ for i_model in TRAIN_MODEL_LIST:
                     i_batch = int(i_batch - 32)
                     if i_batch < 32:
                         raise RuntimeError(str(e))
-                if "cudnn RNN backward can only be called in training mode" in str(e):
+                elif "cudnn RNN backward can only be called in training mode" in str(e):
                     logging.warning(str(e))
                     torch.backends.cudnn.enabled = False
                 else:

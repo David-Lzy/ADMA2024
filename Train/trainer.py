@@ -166,7 +166,7 @@ class Trainer:
 
     def __check_resume__(self, to_device):
         def check_check_point(path):
-            checkpoint = torch.load(path)
+            checkpoint = torch.load(path, map_location=self.device)
             for k in self.model_info.keys():
                 self.resume_dict[k] = checkpoint.get(k)
 
@@ -199,13 +199,19 @@ class Trainer:
         ADE_TRAIN_file = os.path.join(
             ADVERSARIAL_TRAINING_PATH, self.adeversarial_path, self.dataset, MODEL_NAME
         )
+
         if os.path.exists(target_file):
+            res = os.path.join(self.out_dir, "test_metrics.csv")
             if self.override:
                 logging.info(f"Del task {self.dataset} all files.")
                 shutil.rmtree(self.out_dir)
             else:
                 start, checkpoint = check_check_point(target_file)
-
+                if not os.path.exists(res) and start == -1:
+                    logging.warning(f"File {res} not found, del {target_file}")
+                    logging.warning("Broken file Project! Must be override!")
+                    self.override = True
+                    return self.__check_resume__(to_device)
                 if self.adeversarial_training:
                     # This means you are try to resume from a model not used for adeversarial training.
                     if not checkpoint["adeversarial_training"]:

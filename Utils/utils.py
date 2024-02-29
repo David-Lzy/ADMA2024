@@ -180,7 +180,9 @@ def concat_metrics_train(mode="train", method="", datasets=None):
 
 
 def save_metrics(directory_name, phase, metrics):
-    with open(f"{directory_name}/{phase}_metrics.csv", "w", newline="") as file:
+    with open(
+        os.path.join(directory_name, f"{phase}_metrics.csv"), "w", newline=""
+    ) as file:
         writer = csv.writer(file)
         writer.writerow(metrics.keys())
         writer.writerow(metrics.values())
@@ -425,7 +427,7 @@ def load_data_from_csv(self):
 
 def load_model(self):
     try:
-        self.model_info = torch.load(self.model_weight_path)
+        self.model_info = torch.load(self.model_weight_path, map_location=self.device)
 
         epoch = self.model_info["epoch"]
 
@@ -456,7 +458,9 @@ def load_model(self):
             "final_model_weights.pth",
         )
         self.model_info = dict()
-        self.model_info["model_state_dict"] = torch.load(self.model_weight_path)
+        self.model_info["model_state_dict"] = torch.load(
+            self.model_weight_path, map_location=self.device
+        )
         self.defence = None
 
     _phase = "TRAIN" if self.adeversarial_training else "TEST"
@@ -565,7 +569,7 @@ def save_conf_to_json(filepath, data_dict):
         json.dump(sorted_attrs, json_file, indent=4)
 
 
-def ATTACK_ALL(
+def ATTACK_ALL1(
     train_model_name,
     run_time=3,
     attack_method_dict=ATTACK_METHODS,
@@ -655,7 +659,7 @@ def unique_and_ordered(sequence):
     return result
 
 
-def attack_all(
+def attack_all2(
     attack_class,
     reverse=False,
     override=False,

@@ -409,7 +409,7 @@ class Classifier_TS2V(nn.Module):
             os.path.dirname(__file__), "train_state", "UCR", self.dataset
         )
         path = TS2Vec_P.get("state_dict_path", default_path)
-        state_dict = torch.load(path)
+        state_dict = torch.load(path, map_location=self.device)
         self.ts2vec_block.net.load_state_dict(state_dict)
         self.ts2vec_block.to(self.device)
         self.ts2vec_block.net.to(self.device)

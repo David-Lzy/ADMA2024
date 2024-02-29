@@ -106,7 +106,17 @@ class Attack(torch.nn.Module):
         init_model(self)
 
         # Be careful of the order. load_state_dict must after model = Model()
-        self.model.load_state_dict(self.model_info["model_state_dict"])
+        try:
+            self.model.load_state_dict(self.model_info["model_state_dict"])
+        except RuntimeError:
+            # 假设 self.model_info["model_state_dict"] 是你要加载的权重字典
+            state_dict = self.model_info["model_state_dict"]
+
+            # 处理state_dict中的键，移除不需要的前缀
+            new_state_dict = {key.replace("mother_model.", ""): value for key, value in state_dict.items()}
+
+            # 使用处理后的state_dict加载权重
+            self.model.load_state_dict(new_state_dict)
         self.model.to(self.device)
         self.model.eval()
         self.model_name = os.path.basename(__file__).split(".")[0]
@@ -237,7 +247,9 @@ class Attack(torch.nn.Module):
         perturbed_data = pd.read_csv(perturbed_file, sep="\t", header=None)
 
         # 获取特定索引的样本
-        original_sample = original_data.iloc[index][1:]  # 假设第一个元素是标签或其他非数据项
+        original_sample = original_data.iloc[index][
+            1:
+        ]  # 假设第一个元素是标签或其他非数据项
         original_sample = original_sample[1:].reset_index(drop=True)
         perturbed_sample = perturbed_data.iloc[index]
 
