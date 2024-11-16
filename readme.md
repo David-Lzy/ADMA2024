@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/PKief/vscode-material-icon-theme/ec559a9f6bfd399b82bb44393651661b08aaf7ba/icons/folder-markdown-open.svg" align="center" width="30%">
+    <img src="https://arxiv.org/html/2408.11264v1/x1.png" align="center" width="90%">
 </p>
 <p align="center"><h1 align="center">Correlation Analysis of Adversarial Attack on Time Series Classification</h1></p>
 <p align="center">
@@ -37,7 +37,13 @@
 
 ---
 
-## Overview
+## Abstract of Paper
+
+    This study investigates the vulnerability of time series classification models to adversarial attacks, with a focus on how these models process local versus global information under such conditions. By leveraging the Normalized Auto Correlation Function (NACF), an exploration into the inclination of neural networks is conducted. It is demonstrated that regularization techniques, particularly those employing Fast Fourier Transform (FFT) methods and targeting frequency components of perturbations, markedly enhance the effectiveness of attacks. Meanwhile, the defense strategies, like noise introduction and Gaussian filtering, are shown to significantly lower the Attack Success Rate (ASR), with approaches based on noise introducing notably effective in countering high-frequency distortions. Furthermore, models designed to prioritize global information are revealed to possess greater resistance to adversarial manipulations. These results underline the importance of designing attack and defense mechanisms, informed by frequency domain analysis, as a means to considerably reinforce the resilience of neural network models against adversarial threats.
+
+Paper Link: <https://arxiv.org/html/2408.11264v1>
+
+## Code Overview
 
 ADMA2024 revolutionizes model robustness by integrating Gaussian smoothing and noise augmentation into machine learning pipelines. It dynamically manages memory constraints, ensuring efficient training and evaluation across datasets. Ideal for data scientists and ML engineers, it enhances model performance against adversarial conditions, fostering resilient AI solutions.
 
@@ -790,14 +796,6 @@ Install ADMA2024 using one of the following methods:
 ❯ cd ENV
 ❯ conda env create -f freeze.yml
 ```
-
----
-
-## Project Roadmap
-
-- [X] **`Task 1`**: <strike>Implement feature one.</strike>
-- [ ] **`Task 2`**: Implement feature two.
-- [ ] **`Task 3`**: Implement feature three.
 
 ---
 
