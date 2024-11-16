@@ -835,12 +835,18 @@ Install ADMA2024 using one of the following methods:
 
 </details>
 
-<details closed>
+<details open>
 <summary>Contributor Graph</summary>
 <br>
-<p align="left">
-   <a href="https://github.com{/David-Lzy/ADMA2024/}graphs/contributors">
-      <img src="https://contrib.rocks/image?repo=David-Lzy/ADMA2024">
+<p align="left" style="display: flex; align-items: center; gap: 20px;">
+
+   <a href="https://github.com/David-Lzy/ADMA2024/graphs/contributors">
+      <img src="https://avatars.githubusercontent.com/u/11451635?s=512v=4"
+           style="width: 256px; height: 256px; border-radius: 100%; border: 1px solid #ccc;">
+   </a>
+   <a href="https://github.com/David-Lzy/ADMA2024/graphs/contributors">
+      <img src="https://avatars.githubusercontent.com/u/44744928?s=512&v=4"
+           style="width: 256px; height: 256px; border-radius: 100%; border: 1px solid #ccc;">
    </a>
 </p>
 </details>
