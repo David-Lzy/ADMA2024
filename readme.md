@@ -32,7 +32,7 @@
   - [Testing](#-testing)
 - [Project Roadmap](#-project-roadmap)
 - [Contributing](#-contributing)
-- [License](#-license)
+- [License](#-MIT)
 - [Acknowledgments](#-acknowledgments)
 
 ---
