@@ -64,11 +64,7 @@ ADMA2024 revolutionizes model robustness by integrating Gaussian smoothing and n
 | 📦 | **Dependencies**  | <ul><li>Utilizes a wide range of datasets</li><li>Dependencies managed via a virtual environment</li><li>Regular updates to dependencies</li></ul> |
 | 🚀 | **Scalability**   | <ul><li>Horizontally scalable</li><li>Supports load balancing</li><li>Elastic scaling based on demand</li></ul> |
 
-```
-
----
-
-##  Project Structure
+## Project Structure
 
 ```sh
 
