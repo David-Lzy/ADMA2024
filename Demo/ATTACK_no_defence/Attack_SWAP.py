@@ -24,7 +24,7 @@ from CODE.Attack.swap import SWAP
 attacker = SWAP
 special_paramater = {
     # "c": 1e-3,
-    "epoch": 100,
+    "epoch": 1000,
 }
 while True:
     try:

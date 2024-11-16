@@ -39,7 +39,7 @@ def load_data(
         except PermissionError:
             pass  # 如果没有权限复制文件，保持使用原始路径
 
-    # 使用临时文件路径如果存在，否则回退到原始文件路径
+    #
     file_path_to_use = (
         temp_file_path if os.path.exists(temp_file_path) else original_file_path
     )

@@ -107,18 +107,25 @@ def attack_all(
         for trainer_method_path in trainer_method_path_list:
             torch.cuda.empty_cache()
             for i, dataset in enumerate(datasets):
-                dbs = 192
+                dbs = 128
                 while True:
                     try:
                         attack_method = sub_attack(batch_size=dbs, device=device)
                         break
                     except RuntimeError as e:
                         if "CUDA out of memory" in str(e):
+                            dbs = int(max(dbs - 16, dbs * 0.8))
+                            os.environ["PYTORCH_CUDA_ALLOC_CONF"] = (
+                                "expandable_segments:True"
+                            )
+                            logging.warning(
+                                f"CUDA out of memory, try smaller batch: {dbs - 16}..."
+                            )
                             logging.debug(str(e))
                             torch.cuda.empty_cache()
-                            time.sleep(1)
-                            dbs = int(dbs - 32)
-                            if dbs < 32:
+                            time.sleep(10)
+
+                            if dbs < 1:
                                 raise RuntimeError(str(e))
                         elif (
                             "cudnn RNN backward can only be called in training mode"
@@ -149,7 +156,7 @@ special_paramater = {
 
 attack_all(
     attack_class=attacker,
-    reverse=False,
+    reverse=True,
     override=False,
     device="cuda:0",
     special_paramater=special_paramater,

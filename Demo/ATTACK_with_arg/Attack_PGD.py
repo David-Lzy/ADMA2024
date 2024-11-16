@@ -107,7 +107,7 @@ def attack_all(
         for trainer_method_path in trainer_method_path_list:
             for i, dataset in enumerate(datasets):
                 torch.cuda.empty_cache()
-                dbs = 192
+                dbs = 128
                 while True:
                     try:
                         attack_method = sub_attack(batch_size=dbs, device=device)
@@ -149,7 +149,7 @@ special_paramater = {
 }
 attack_all(
     attack_class=attacker,
-    reverse=False,
+    reverse=True,
     override=False,
     device="cuda:0",
     special_paramater=special_paramater,

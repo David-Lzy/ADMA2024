@@ -13,7 +13,7 @@ def setup_logging():
     formatted_log = current_datetime.strftime("%Yy_%mm_%dd_%Hh_%Mm_%Ss.log")
     formatted_log = f"{hostname}_{username}_" + formatted_log
 
-    log_path = os.path.join(HOME_LOC, "LOG", formatted_log)
+    log_path = os.path.join(HOME_LOC, 'Paper2024',"LOG", formatted_log)
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",

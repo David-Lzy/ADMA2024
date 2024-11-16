@@ -113,7 +113,10 @@ class Attack(torch.nn.Module):
             state_dict = self.model_info["model_state_dict"]
 
             # 处理state_dict中的键，移除不需要的前缀
-            new_state_dict = {key.replace("mother_model.", ""): value for key, value in state_dict.items()}
+            new_state_dict = {
+                key.replace("mother_model.", ""): value
+                for key, value in state_dict.items()
+            }
 
             # 使用处理后的state_dict加载权重
             self.model.load_state_dict(new_state_dict)
@@ -142,7 +145,7 @@ class Attack(torch.nn.Module):
         raise NotImplementedError
 
     def __get_optimizer__(self, r):
-        return optim.Adam([r], lr=0.001, betas=(0.9, 0.999), eps=1e-07, amsgrad=True)
+        return optim.Adam([r], lr=0.0001, betas=(0.9, 0.999), eps=1e-07, amsgrad=True)
 
     def __perturb__(self, x):
         raise NotImplementedError

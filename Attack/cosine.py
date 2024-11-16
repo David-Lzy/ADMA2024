@@ -33,7 +33,7 @@ class csc:
         norm_b = torch.norm(input_array2, p=2, dim=-1)
 
         # 计算余弦相似度
-        cos_similarity = dot_product / (norm_a * norm_b)
+        cos_similarity = dot_product / ((norm_a * norm_b) + 1e-8)
 
         return cos_similarity
 
@@ -48,7 +48,7 @@ class COS(Mix):
         self.c2 = kwargs.pop("c2", self.default_c2)
 
         # Call the parent class's constructor with the remaining kwargs
-        super().__init__(swap=True, swap_index=1, CW=False, kl_loss=False, **kwargs)
+        super().__init__(swap=True, swap_index=1, CW=True, kl_loss=False, **kwargs)
         # self.wcf_instance.weights_f()
 
         self.attack_method_path = "COS"
@@ -62,20 +62,31 @@ class COS(Mix):
 
     def __cos_sim__(self, x, r):
         sim = -torch.log((csc.cosine_s(x, x + r) + 1) / 2)
+        # sim = -1 / (1 - csc.cosine_s(x, x + r) + 1e-2)
         return sim
 
     # Rest of the Correlation class methods...
     def __CW_loss_fun__(self, x, r, y_target, top1_index):
-        _ = super().__CW_loss_fun__(x, r, y_target, top1_index)
-        return self.c1 * self.__cos_sim__(x, r).mean() + _
+        # Compute weighted FFT integration of r
+        cos_los = self.__cos_sim__(x, r)
 
-        # # Combine the attack loss with the corr regularization
-        # # corr = self.wcf_instance.wcc(x, x + r)
-        # l2_reg = torch.norm(r, p=2)
-        # # print(corr_diff.mean().item(), loss.mean().item(), "\n")
-        # # print(r.shape)
-        # # print(corr.shape, loss.shape, loss.mean().shape, l2_reg.shape)
-        # return l2_reg * self.c2 + loss.mean()
+        # Compute the loss
+        y_pred_adv = self.f(x + r)
+        loss = self.__LOSS__(y_pred_adv, y_target)
+
+        # Apply mask to exclude incorrect classifications
+        mask = torch.zeros_like(loss, dtype=torch.bool)
+        _, top1_index_adv = torch.max(y_pred_adv, dim=1)
+        for i in range(len(y_target)):
+            if not top1_index_adv[i] == top1_index[i]:
+                mask[i] = True
+        loss[mask] = 0
+        # cos_los[mask] = 0
+
+        # Combine the FFT integrated r with the attack loss
+        total_loss = cos_los.mean() * self.c1 + loss.mean()
+
+        return total_loss
 
     def __NoCW_loss_fun__(self, x, r, y_target, top1_index):
         _ = super().__NoCW_loss_fun__(x, r, y_target, top1_index)
